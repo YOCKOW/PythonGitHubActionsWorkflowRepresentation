@@ -8,6 +8,6 @@ setup(
     author='YOCKOW',
     url='https://github.com/YOCKOW/PythonGitHubActionsWorkflowRepresentation',
     license='MIT',
-    packages=find_packages(exclude=('tests', 'docs')),
-    test_suite='tests'
+    packages=find_packages(exclude=('workflow_tests', 'docs')),
+    test_suite='workflow_tests'
 )

@@ -12,8 +12,10 @@ class Node:
     raise RuntimeError("This method must be overridden.")
 
   def yaml_string(self) -> str:
+    lines: List[str] = self.yaml_lines()
+    assert isinstance(lines, list) and all([isinstance(line, str) for line in lines])
     # Remove empty lines
-    return "\n".join(filter(lambda line: not re.match(r'^\s*$', line), self.yaml_lines()))
+    return "\n".join(filter(lambda line: not re.match(r'^\s*$', line), lines))
 
   def dump_yaml_string(self, file: Union[os.PathLike, IO[Any]]) -> None:
     # Write YAML to `file`.
@@ -32,4 +34,9 @@ class Node:
     if should_close:
       file_handle.close()
 
+  @property
+  def is_flow_style(self) -> bool: return False
 
+class FlowStyleNode(Node):
+  @property
+  def is_flow_style(self) -> bool: return True

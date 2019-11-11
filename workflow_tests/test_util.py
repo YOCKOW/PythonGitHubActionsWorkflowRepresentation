@@ -7,7 +7,7 @@ class WorkflowUtilTests(unittest.TestCase):
     self.assertEqual(dump_yaml_string('${{ matrix.os }}'), '${{ matrix.os }}')
     self.assertEqual(dump_yaml_string('5.1'), '"5.1"')
     self.assertEqual(dump_yaml_string('5.1.1'), '5.1.1')
-    self.assertEqual(dump_yaml_string("echo hello\necho world"), "|\n  echo hello\n  echo world")
+    self.assertEqual(dump_yaml_string("echo hello\necho world"), f"|\n{indent(1)}echo hello\n{indent(1)}echo world")
 
   def test_dump_strings(self):
     strings = ['A', 'B', 'C']
