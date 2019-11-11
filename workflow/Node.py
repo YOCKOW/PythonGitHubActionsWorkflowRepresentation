@@ -1,5 +1,6 @@
 import io
 import os
+import re
 from typing import Any, List, IO, Optional, Union
 
 class Node:
@@ -11,7 +12,8 @@ class Node:
     raise RuntimeError("This method must be overridden.")
 
   def yaml_string(self) -> str:
-    return "\n".join(self.yaml_lines()) + "\n"
+    # Remove empty lines
+    return "\n".join(filter(lambda line: not re.match(r'^\s*$', line), self.yaml_lines()))
 
   def dump_yaml_string(self, file: Union[os.PathLike, IO[Any]]) -> None:
     # Write YAML to `file`.
