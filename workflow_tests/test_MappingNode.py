@@ -17,7 +17,7 @@ class MappingTests(unittest.TestCase):
         "nested1": StringNode("value1")
       })
     })
-    self.assertEqual(node.yaml_string() + "\n", dedent("""\
+    self.assertEqual(str(node.yaml()), dedent("""\
       key0: string
       key1:
         - item0
@@ -33,5 +33,5 @@ class MappingTests(unittest.TestCase):
         "inner": FlowStyleSequence([FlowStyleString('item0'), FlowStyleString('item1')])
       })
     })
-    self.assertEqual(node.yaml_string(), '{outer: {inner: [item0, item1]}}')
+    self.assertEqual(str(node.yaml()).rstrip("\n"), '{outer: {inner: [item0, item1]}}')
 

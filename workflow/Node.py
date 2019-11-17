@@ -1,35 +1,38 @@
 import io
 import os
 import re
-from typing import Any, List, IO, Optional, Union
+from typing import Any, List, IO, Optional, Union, overload
+from .string import Lines
 
 class Node:
   """
   An abstract class that represents Workflow's Node.
   """
+  
+  def yaml(self) -> Lines:
+    raise NotImplementedError("This method must be overridden.")
 
-  def yaml_lines(self) -> List[str]:
-    raise RuntimeError("This method must be overridden.")
+  @overload
+  def dump_yaml(self, output: os.PathLike): raise NotImplementedError()
 
-  def yaml_string(self) -> str:
-    lines: List[str] = self.yaml_lines()
-    assert isinstance(lines, list) and all([isinstance(line, str) for line in lines])
-    # Remove empty lines
-    return "\n".join(filter(lambda line: not re.match(r'^\s*$', line), lines))
+  @overload
+  def dump_yaml(self, output: IO[Any]): raise NotImplementedError()
 
-  def dump_yaml_string(self, file: Union[os.PathLike, IO[Any]]) -> None:
+  def dump_yaml(self, output):
     # Write YAML to `file`.
-    file_handle: Optional[IO[Any]] = None
+    file_handle: IO[Any]
     should_close: bool = False
-    if isinstance(file, io.IOBase):
-      file_handle = file
-    elif isinstance(file, os.PathLike):
-      file_handle = open(file, 'w')
+    if isinstance(output, io.IOBase):
+      file_handle = output
+    elif isinstance(output, os.PathLike):
+      file_handle = open(output, 'w')
       should_close = True
     else:
       raise ValueError("`file` must be an instance of `PathLike` or `IO`.")
 
-    file_handle.write(self.yaml_string())
+    lines: Lines = self.yaml()
+    lines.remove_empty_lines()
+    file_handle.write(str(lines))
 
     if should_close:
       file_handle.close()

@@ -20,4 +20,4 @@ jobs:
         with:
           python-version: "3.7"
       - name: Test
-        run: python3 setup.py test
+        run: python3 -m unittest discover -s workflow_tests -p "test_*.py"

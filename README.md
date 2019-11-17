@@ -24,7 +24,7 @@ workflow = Workflow({
   }
 })
 
-print(workflow.yaml_string())
+print(workflow.yaml())
 """
 name: Some Workflow
 on: push
