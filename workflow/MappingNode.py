@@ -14,6 +14,12 @@ class MappingNode(Node):
       if not isinstance(key, str) or not isinstance(node, Node): raise ValueError("Invalid value for `MappingNode`.")
       self._map[key] = node
 
+  def __getitem__(self, key: str) -> Node:
+    return self._map[key]
+
+  def __setitem__(self, key: str, node: Node):
+    self._map[key] = node
+
   def key_order(self) -> List[str]:
     """
     You can define the order of keys used by `yaml`.

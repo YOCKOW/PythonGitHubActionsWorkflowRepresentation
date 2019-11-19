@@ -3,6 +3,15 @@ from textwrap import dedent
 import unittest
 
 class StringLinesTests(unittest.TestCase):
+  def test_eq(self):
+    line = Line("line")
+    self.assertEqual(line, Line("line"))
+    self.assertEqual(line, "line\n")
+
+    lines = Lines("line 0\nline 1\n")
+    self.assertEqual(lines, Lines("line 0\nline 1"))
+    self.assertEqual(lines, "line 0\nline 1\n")
+
   def test_line(self):
     line = Line("some line")
     self.assertEqual(str(line), "some line\n")

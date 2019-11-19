@@ -30,6 +30,18 @@ class Line:
       self.__line += other.raw_string
     return self
 
+  def __eq__(self, other) -> bool:
+    if other is None:
+      return False
+    if isinstance(other, Line):
+      return self.indent_level == other.indent_level and self.raw_string == other.raw_string
+    if isinstance(other, str):
+      return str(self).rstrip("\n") == other.rstrip("\n")
+    return False
+
+  def __ne__(self, other) -> bool:
+    return not (self == other)
+
   def __str__(self) -> str:
     return Lines.indent(self.__indent_level) + self.__line + "\n"
 
@@ -94,6 +106,22 @@ class Lines:
     for line in self.__lines:
       lines.append(deepcopy(line))
     return Lines(lines)
+
+  def __eq__(self, other) -> bool:
+    if other is None: 
+      return False
+    if isinstance(other, Lines):
+      if self.count != other.count:
+        return False
+      for ii in range(0, self.count):
+        if self[ii] != other[ii]: return False
+      return True
+    if isinstance(other, str):
+      return str(self).rstrip("\n") == other.rstrip("\n")
+    return False
+
+  def __ne__(self, other) -> bool:
+    return not (self == other)
 
   def __iter__(self) -> Iterator[Line]:
     return iter(self.__lines)

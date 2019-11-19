@@ -1,4 +1,5 @@
 from .Node import Node, FlowStyleNode
+from .StringNode import FlowStyleString
 from .string import Lines, Line
 from . import util
 from copy import copy
@@ -43,4 +44,9 @@ class FlowStyleSequence(SequenceNode, FlowStyleNode):
       yaml_strings.append(child_lines[0].raw_string)
     return Lines([Line(f"[{', '.join(yaml_strings)}]")])
 
-
+class StringSequence(SequenceNode):
+  def __init__(self, strings: List[str]):
+    nodes: List[Node] = []
+    for string in strings:
+      nodes.append(FlowStyleString(string))
+    super().__init__(nodes)
