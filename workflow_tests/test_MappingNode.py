@@ -35,3 +35,8 @@ class MappingTests(unittest.TestCase):
     })
     self.assertEqual(str(node.yaml()).rstrip("\n"), '{outer: {inner: [item0, item1]}}')
 
+  def test_key_order(self):
+    node = FlowStyleMapping({"key0": FlowStyleString("value0"), "key1": FlowStyleString("value1")})
+    node.key_order = ['key1', 'key0']
+    self.assertEqual(node.yaml(), "{key1: value1, key0: value0}")
+
