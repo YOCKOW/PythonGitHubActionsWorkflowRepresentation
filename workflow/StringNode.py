@@ -5,7 +5,7 @@ from typing import List
 
 class StringNode(Node):
   def __init__(self, info: str):
-    assert isinstance(info, str)
+    assert isinstance(info, str), f"Actual type: {type(info)}"
     self.raw_string = info
 
   def yaml(self) -> Lines:

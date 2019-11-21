@@ -5,6 +5,7 @@ from .string import Lines, Line
 from . import util
 from copy import copy
 from functools import reduce
+from textwrap import dedent
 from typing import Dict, List, Tuple
 
 def _key_yaml(key) -> str:
@@ -85,6 +86,10 @@ class FlowStyleMapping(MappingNode, FlowStyleNode):
 class StringMapping(MappingNode):
   def __init__(self, info: Dict[str, str]):
     def reducer(dic: Dict[str, Node], key_value: Tuple[str, str]) -> Dict[str, Node]:
+      assert isinstance(key_value[0], str) and isinstance(key_value[1], str), dedent(f"""
+        Key: {key_value[0]} (type: {type(key_value[0])})
+        Value: {key_value[1]} (type: {type(key_value[1])})
+      """)
       dic[key_value[0]] = FlowStyleString(key_value[1])
       return dic
     converted: Dict[str, Node] = reduce(reducer, info.items(), {})

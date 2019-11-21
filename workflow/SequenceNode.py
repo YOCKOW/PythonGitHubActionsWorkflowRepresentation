@@ -1,8 +1,9 @@
 from .Node import Node, FlowStyleNode
+from .NumberNode import IntegerNode
 from .StringNode import FlowStyleString
 from .string import Lines, Line
-from . import util
 from copy import copy
+from numbers import Integral
 from typing import List
 
 def _short_indent() -> str:
@@ -47,7 +48,18 @@ class FlowStyleSequence(SequenceNode, FlowStyleNode):
 
 class StringSequence(SequenceNode):
   def __init__(self, info: List[str]):
+    assert isinstance(info, list)
     nodes: List[Node] = []
     for string in info:
+      assert isinstance(string, str)
       nodes.append(FlowStyleString(string))
+    super().__init__(nodes)
+
+class IntegerSequence(SequenceNode):
+  def __init__(self, info: List[Integral]):
+    assert isinstance(info, list)
+    nodes: List[Node] = []
+    for integer in info:
+      assert isinstance(integer, Integral)
+      nodes.append(IntegerNode(integer))
     super().__init__(nodes)
