@@ -4,8 +4,9 @@ from . import util
 from typing import List
 
 class StringNode(Node):
-  def __init__(self, string: str):
-    self.raw_string = string
+  def __init__(self, info: str):
+    assert isinstance(info, str)
+    self.raw_string = info
 
   def yaml(self) -> Lines:
     return util.yaml_from_string(self.raw_string)

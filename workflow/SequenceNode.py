@@ -9,9 +9,10 @@ def _short_indent() -> str:
   return Lines.indent(1)[0:(Lines.INDENT_WIDTH - 1)]
 
 class SequenceNode(Node):
-  def __init__(self, some_list: List[Node]):
-    if len(some_list) < 1: raise ValueError("List must not be empty.")
-    self.children = copy(some_list)
+  def __init__(self, info: List[Node]):
+    assert isinstance(info, list)
+    if len(info) < 1: raise ValueError("List must not be empty.")
+    self.children = copy(info)
 
   def yaml(self) -> Lines:
     result: Lines = Lines()
@@ -29,9 +30,9 @@ class SequenceNode(Node):
     return result
 
 class FlowStyleSequence(SequenceNode, FlowStyleNode):
-  def __init__(self, some_list: List[FlowStyleNode]):
+  def __init__(self, info: List[FlowStyleNode]):
     new_list: List[Node] = []
-    for node in some_list:
+    for node in info:
       if not isinstance(node, FlowStyleNode): raise ValueError("All nodes must be flow style.")
       new_list.append(node)
     super().__init__(new_list)
@@ -45,8 +46,8 @@ class FlowStyleSequence(SequenceNode, FlowStyleNode):
     return Lines([Line(f"[{', '.join(yaml_strings)}]")])
 
 class StringSequence(SequenceNode):
-  def __init__(self, strings: List[str]):
+  def __init__(self, info: List[str]):
     nodes: List[Node] = []
-    for string in strings:
+    for string in info:
       nodes.append(FlowStyleString(string))
     super().__init__(nodes)

@@ -1,7 +1,8 @@
+from abc import abstractmethod
 import io
 import os
 import re
-from typing import Any, List, IO, Optional, Union, overload
+from typing import Any, IO, overload
 from .string import Lines
 
 class Node:
@@ -9,6 +10,9 @@ class Node:
   An abstract class that represents Workflow's Node.
   """
   
+  @abstractmethod
+  def __init__(self, info: Any): raise NotImplementedError()
+
   def yaml(self) -> Lines:
     raise NotImplementedError("This method must be overridden.")
 

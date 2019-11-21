@@ -7,15 +7,16 @@ from typing import Any, Dict, List, cast, overload
 
 class On(Node):
   @overload
-  def __init__(self, event: str): raise NotImplementedError()
+  def __init__(self, info: str): raise NotImplementedError()
 
   @overload
-  def __init__(self, events: List[str]): raise NotImplementedError()
+  def __init__(self, info: List[str]): raise NotImplementedError()
 
   @overload
-  def __init__(self, events: Dict[str, Any]): raise NotImplementedError()
+  def __init__(self, info: Dict[str, Any]): raise NotImplementedError()
 
-  def __init__(self, events):
+  def __init__(self, info):
+    events = info
     if isinstance(events, str):
       self.__payload = Event.event(events)
     elif isinstance(events, list):
