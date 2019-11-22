@@ -32,10 +32,10 @@ class Step(MappingNode):
   @property
   def key_order(self) -> List[str]:
     return [
-      'env',
       'id',
       'if',
       'name',
+      'env',
       'run',
       'shell',
       'working-directory',

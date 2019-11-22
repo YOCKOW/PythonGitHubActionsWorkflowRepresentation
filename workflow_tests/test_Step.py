@@ -14,9 +14,9 @@ class StepTests(TestCase):
       'timeout-minutes': 5,
     })
     self.assertEqual(step.yaml(), dedent("""\
+      name: Step Name
       env:
         NAME: VALUE
-      name: Step Name
       run: |
         echo $NAME
         echo finished

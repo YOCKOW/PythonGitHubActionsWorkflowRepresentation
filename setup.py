@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='GitHub Actions Workflow Representation',
-    version='0.9.1',
+    version='0.9.2',
     description='Workflow representation for GitHub Actions.',
     long_description='See README.md',
     author='YOCKOW',
