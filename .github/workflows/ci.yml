@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+    branches:
+      - "*"
+      - "*/**"
+    tags:
+      - "!*"
+  pull_request:
+    branches:
+      - "*"
+      - "*/**"
+jobs:
+  test:
+    name: Test of GitHub Actions Workflow Representation in Python.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v1.1.1
+        with:
+          python-version: "3.8"
+      - name: Test
+        run: python3 -m unittest discover -s workflow_tests -p "test_*.py" -v
