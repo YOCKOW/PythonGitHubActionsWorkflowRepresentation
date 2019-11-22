@@ -17,13 +17,15 @@ workflow = Workflow({
       "name": "Some Job",
       "strategy": {
         "matrix": {
-          "os": ["ubuntu-latest", "macOS-latest"],,
+          "os": ["ubuntu-latest", "macOS-latest"],
         }
       },
       "runs-on": "${{ matrix.os }}",
       "steps": [
-        "name": "Some Step",
-        "run": "echo Hello"
+        {
+          "name": "Some Step",
+          "run": "echo Hello"
+        }
       ]
     }
   }
@@ -32,7 +34,7 @@ workflow = Workflow({
 print(workflow.yaml())
 """
 name: Some Workflow
-on: push
+"on": push
 jobs:
   job1:
     name: Some Job
