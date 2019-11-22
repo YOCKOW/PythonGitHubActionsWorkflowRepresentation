@@ -1,14 +1,14 @@
 from .Node import Node
 from .EnvironmentVariables import EnvironmentVariables
-from .MappingNode import MappingNode
+from .MappingNode import MappingNode, NodeSpecifiedMapping
 from .NumberNode import IntegerNode
 from .SequenceNode import SequenceNode, StringSequence
 from .StringNode import FlowStyleString
 from .string import Lines
 from numbers import Integral
-from typing import Any, Dict, List, Type, Union, cast
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
-class Container(MappingNode):
+class Container(NodeSpecifiedMapping):
   class Port(Node):
     def __init__(self, info: Union[Integral, str]):
       if isinstance(info, Integral):
@@ -29,22 +29,15 @@ class Container(MappingNode):
         ports.append(Container.Port(port))
       super().__init__(ports)
 
-  __classes = cast(Dict[str, Type[Node]], {
-    'image': FlowStyleString,
-    'env': EnvironmentVariables,
-    'ports': PortSequence,
-    'volumes': StringSequence,
-    'options': FlowStyleString,
-  })
-
-  def __init__(self, info: Dict[str, Any]):
-    converted: Dict[str, Node] = {}
-    assert isinstance(info, dict)
-    for key, value in info.items():
-      the_class = type(self).__classes.get(key, None)
-      if the_class is None: raise RuntimeError(f"Container configuration named {key} is not supported.")
-      converted[key] = the_class(value)
-    super().__init__(converted)
+  @classmethod
+  def node_class(cls, name: str) -> Optional[Type[Node]]:
+    return {
+      'image': FlowStyleString,
+      'env': EnvironmentVariables,
+      'ports': Container.PortSequence,
+      'volumes': StringSequence,
+      'options': FlowStyleString,
+    }.get(name, None)
 
   @property
   def key_order(self) -> List[str]:
@@ -56,11 +49,7 @@ class Container(MappingNode):
       'options',
     ]
 
-class Services(MappingNode):
-  def __init__(self, info: Dict[str, Dict[str, Any]]):
-    converted: Dict[str, Container] = {}
-    assert isinstance(info, dict)
-    for service_name, container_info in info.items():
-      assert isinstance(container_info, dict)
-      converted[service_name] = Container(container_info)
-    super().__init__(cast(Dict[str, Node], converted))
+class Services(NodeSpecifiedMapping):
+  @classmethod
+  def node_class(cls, name: str) -> Optional[Type[Node]]:
+    return Container

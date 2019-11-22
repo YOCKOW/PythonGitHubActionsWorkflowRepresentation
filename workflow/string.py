@@ -129,6 +129,9 @@ class Lines:
   def __str__(self) -> str:
     return ''.join(map(lambda line: str(line), self.__lines))
 
+  def __repr__(self) -> str:
+    return self.__str__()
+
   @overload
   def __getitem__(self, subscript: slice) -> Line: raise NotImplementedError()
 

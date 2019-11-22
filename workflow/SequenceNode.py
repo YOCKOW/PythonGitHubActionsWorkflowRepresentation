@@ -4,7 +4,7 @@ from .StringNode import FlowStyleString
 from .string import Lines, Line
 from copy import copy
 from numbers import Integral
-from typing import List
+from typing import Any, List, Type
 
 def _short_indent() -> str:
   return Lines.indent(1)[0:(Lines.INDENT_WIDTH - 1)]
@@ -46,20 +46,25 @@ class FlowStyleSequence(SequenceNode, FlowStyleNode):
       yaml_strings.append(child_lines[0].raw_string)
     return Lines([Line(f"[{', '.join(yaml_strings)}]")])
 
-class StringSequence(SequenceNode):
-  def __init__(self, info: List[str]):
+class NodeSpecifiedSequence(SequenceNode):
+  @classmethod
+  def node_class(cls) -> Type[Node]: raise NotImplementedError()
+
+  def __init__(self, info: List[Any]):
     assert isinstance(info, list)
     nodes: List[Node] = []
-    for string in info:
-      assert isinstance(string, str)
-      nodes.append(FlowStyleString(string))
+    for something in info:
+      node = self.__class__.node_class()(something)
+      nodes.append(node)
     super().__init__(nodes)
 
-class IntegerSequence(SequenceNode):
-  def __init__(self, info: List[Integral]):
-    assert isinstance(info, list)
-    nodes: List[Node] = []
-    for integer in info:
-      assert isinstance(integer, Integral)
-      nodes.append(IntegerNode(integer))
-    super().__init__(nodes)
+
+class StringSequence(NodeSpecifiedSequence):
+  @classmethod
+  def node_class(cls) -> Type[Node]:
+    return FlowStyleString
+
+class IntegerSequence(NodeSpecifiedSequence):
+  @classmethod
+  def node_class(cls) -> Type[Node]:
+    return IntegerNode

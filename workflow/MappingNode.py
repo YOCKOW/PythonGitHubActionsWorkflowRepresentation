@@ -4,9 +4,7 @@ from .StringNode import FlowStyleString, StringNode
 from .string import Lines, Line
 from . import util
 from copy import copy
-from functools import reduce
-from textwrap import dedent
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Type
 
 def _key_yaml(key) -> str:
   return util.yaml_from_string(key, force_flow_style=True)[0].raw_string
@@ -83,14 +81,21 @@ class FlowStyleMapping(MappingNode, FlowStyleNode):
       items.append(f"{_key_yaml(key)}: {child_lines[0].raw_string}")
     return Lines([Line("{" + ", ".join(items) + "}")])
 
-class StringMapping(MappingNode):
-  def __init__(self, info: Dict[str, str]):
-    def reducer(dic: Dict[str, Node], key_value: Tuple[str, str]) -> Dict[str, Node]:
-      assert isinstance(key_value[0], str) and isinstance(key_value[1], str), dedent(f"""
-        Key: {key_value[0]} (type: {type(key_value[0])})
-        Value: {key_value[1]} (type: {type(key_value[1])})
-      """)
-      dic[key_value[0]] = FlowStyleString(key_value[1])
-      return dic
-    converted: Dict[str, Node] = reduce(reducer, info.items(), {})
+class NodeSpecifiedMapping(MappingNode):
+  @classmethod
+  def node_class(cls, name: str) -> Optional[Type[Node]]: raise NotImplementedError()
+
+  def __init__(self, info: Dict[str, Any]):
+    converted: Dict[str, Node] = {}
+    assert isinstance(info, dict)
+    for key, value in info.items():
+      the_class = self.__class__.node_class(name=key)
+      if the_class is None:
+        raise RuntimeError(f"The key named {key} is not supported for this context.")
+      converted[key] = the_class(value)
     super().__init__(converted)
+
+class StringMapping(NodeSpecifiedMapping):
+  @classmethod
+  def node_class(cls, name: str) -> Optional[Type[Node]]:
+    return FlowStyleString
